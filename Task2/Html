@@ -1,0 +1,55 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load Dataset
+df = pd.read_csv('website_traffic.csv')
+
+# Data Cleaning
+df.drop_duplicates(inplace=True)
+
+# Convert Date
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Sessions
+sessions = len(df)
+
+# Users
+users = df['User_ID'].nunique()
+
+# Bounce Rate
+bounce_rate = (df['Pages_Visited'] == 1).mean() * 100
+
+# Average Session Duration
+avg_duration = df['Session_Duration'].mean()
+
+print("Sessions:", sessions)
+print("Users:", users)
+print("Bounce Rate:", bounce_rate)
+print("Avg Duration:", avg_duration)
+
+# Traffic Sources
+traffic = df['Traffic_Source'].value_counts()
+
+traffic.plot(kind='pie', autopct='%1.1f%%')
+plt.title("Traffic Sources")
+plt.show()
+
+# Top Landing Pages
+landing = df['Landing_Page'].value_counts().head(10)
+
+landing.plot(kind='bar')
+plt.title("Top Landing Pages")
+plt.show()
+
+# Session Duration
+sns.histplot(df['Session_Duration'])
+plt.title("Session Duration Distribution")
+plt.show()
+
+# Daily Traffic
+daily = df.groupby('Date')['User_ID'].count()
+
+daily.plot(figsize=(10,5))
+plt.title("Daily Traffic Trend")
+plt.show()
